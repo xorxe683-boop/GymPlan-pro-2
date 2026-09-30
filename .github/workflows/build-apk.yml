@@ -18,7 +18,7 @@ jobs:
           java-version: '17'
 
       - name: Configurar Android
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
 
       - name: Descomprimir proyecto
         run: |
