@@ -17,14 +17,27 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Configurar Gradle
-        uses: gradle/actions/setup-gradle@v4
+      - name: Configurar Android
+        uses: android-actions/setup-android@v3
+
+      - name: Descomprimir proyecto
+        run: |
+          unzip -o GymPlan-Pro-2-Nube.zip -d proyecto
+
+      - name: Encontrar proyecto Android
+        run: |
+          echo "Buscando proyecto Gradle..."
+          find proyecto -name settings.gradle -o -name settings.gradle.kts
 
       - name: Crear APK
-        run: gradle assembleDebug
+        run: |
+          PROJECT_DIR=$(dirname "$(find proyecto -name settings.gradle -o -name settings.gradle.kts | head -n 1)")
+          echo "Proyecto encontrado en: $PROJECT_DIR"
+          cd "$PROJECT_DIR"
+          gradle assembleDebug --stacktrace
 
       - name: Guardar APK
         uses: actions/upload-artifact@v4
         with:
           name: GymPlan-Pro-2-APK
-          path: app/build/outputs/apk/debug/*.apk
+          path: proyecto/**/app/build/outputs/apk/debug/*.apk
